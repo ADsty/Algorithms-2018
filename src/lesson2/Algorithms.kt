@@ -2,6 +2,8 @@
 
 package lesson2
 
+import java.io.File
+
 /**
  * Получение наибольшей прибыли (она же -- поиск максимального подмассива)
  * Простая
@@ -27,7 +29,21 @@ package lesson2
  * В случае обнаружения неверного формата файла бросить любое исключение.
  */
 fun optimizeBuyAndSell(inputName: String): Pair<Int, Int> {
-    TODO()
+    val list = ArrayList<Int>()
+    var result = Pair<Int, Int>(-1, -1)
+    var dif = 0
+    for (line in File(inputName).readLines()) {
+        list.add(line.toInt())
+    }
+    for (i in 0..list.size - 1) {
+        for (j in i until list.size - 1) {
+            if (list[j] - list[i] > dif) {
+                dif = list[j] - list[i]
+                result = Pair(i + 1, j + 1)
+            }
+        }
+    }
+    return result
 }
 
 /**
@@ -92,7 +108,26 @@ fun josephTask(menNumber: Int, choiceInterval: Int): Int {
  * вернуть ту из них, которая встречается раньше в строке first.
  */
 fun longestCommonSubstring(first: String, second: String): String {
-    TODO()
+    var length = 0
+    var max_length = 0
+    var result = ""
+    for (i in 0..first.length - 1) {
+        for (j in 0..second.length - 1) {
+            length = 0
+            var c = i
+            var k = j
+            while (c < first.length && k < second.length && first[c] == second[k]) {
+                length++
+                c++
+                k++
+            }
+            if (length > max_length) {
+                max_length = length
+                result = first.substring(i, c)
+            }
+        }
+    }
+    return result
 }
 
 /**
@@ -106,7 +141,19 @@ fun longestCommonSubstring(first: String, second: String): String {
  * Единица простым числом не считается.
  */
 fun calcPrimesNumber(limit: Int): Int {
-    TODO()
+    var result = 0;
+    for (i in 1..limit) {
+        if (isPrime(i)) result++
+    }
+    return result
+}
+
+fun isPrime(n: Int): Boolean {
+    if (n < 2) return false
+    for (m in 2..Math.sqrt(n.toDouble()).toInt()) {
+        if (n % m == 0) return false
+    }
+    return true
 }
 
 /**

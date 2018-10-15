@@ -2,6 +2,10 @@
 
 package lesson1
 
+import java.io.File
+import java.io.IOException
+import java.util.*
+
 /**
  * Сортировка времён
  *
@@ -31,7 +35,39 @@ package lesson1
  * В случае обнаружения неверного формата файла бросить любое исключение.
  */
 fun sortTimes(inputName: String, outputName: String) {
-    TODO()
+    if (File(inputName).readLines().isEmpty()) throw IOException()
+    val times = ArrayList<Int>()
+    for (line in File(inputName).readLines()) {
+        if (timeStrToSeconds(line) < 0) {
+            throw IOException()
+        }
+        times.add(timeStrToSeconds(line))
+    }
+    val integer = times.toIntArray()
+    quickSort(integer)
+    val writer = File(outputName).bufferedWriter()
+    for (o in integer) {
+        writer.write(timeSecondsToStr(o))
+        writer.newLine()
+    }
+    writer.close()
+}
+
+fun timeSecondsToStr(seconds: Int): String {
+    val hour = seconds / 3600
+    val minute = (seconds % 3600) / 60
+    val second = seconds % 60
+    return String.format("%02d:%02d:%02d", hour, minute, second)
+}
+
+fun timeStrToSeconds(str: String): Int {
+    val parts = str.split(":")
+    var result = 0
+    for (part in parts) {
+        val number = part.toInt()
+        result = result * 60 + number
+    }
+    return result
 }
 
 /**
@@ -64,6 +100,7 @@ fun sortAddresses(inputName: String, outputName: String) {
     TODO()
 }
 
+
 /**
  * Сортировка температур
  *
@@ -95,7 +132,27 @@ fun sortAddresses(inputName: String, outputName: String) {
  * 121.3
  */
 fun sortTemperatures(inputName: String, outputName: String) {
-    TODO()
+    val list = ArrayList<Double>()
+    for (line in File(inputName).readLines()) {
+        list.add(line.toDouble())
+    }
+    val sorting = list.toDoubleArray()
+
+    for (j in 1 until sorting.size) {
+        var i = j
+        while (i > 0 && sorting[i - 1] > sorting[i]) {
+            val o = sorting[i]
+            sorting[i] = sorting[i - 1]
+            sorting[i - 1] = o
+            i--
+        }
+    }
+    val writer = File(outputName).bufferedWriter()
+    for (k in sorting) {
+        writer.write(k.toString())
+        writer.newLine()
+    }
+    writer.close()
 }
 
 /**
@@ -128,7 +185,27 @@ fun sortTemperatures(inputName: String, outputName: String) {
  * 2
  */
 fun sortSequence(inputName: String, outputName: String) {
-    TODO()
+    val list = ArrayList<Int>()
+    for (line in File(inputName).readLines()) {
+        list.add(line.toInt())
+    }
+    val result = IntArray(list.max()!! + 1)
+    for (i in list) {
+        result[i]++
+    }
+    val max = result.max()!!
+    val writer = File(outputName).bufferedWriter()
+    for (line in list) {
+        if (line != (result.indexOf(max))) {
+            writer.write(line)
+            writer.newLine()
+        }
+    }
+    for (i in 1..max) {
+        writer.write(result.indexOf(max))
+        writer.newLine()
+    }
+    writer.close()
 }
 
 /**
@@ -146,6 +223,9 @@ fun sortSequence(inputName: String, outputName: String) {
  * Результат: second = [1 3 4 9 9 13 15 20 23 28]
  */
 fun <T : Comparable<T>> mergeArrays(first: Array<T>, second: Array<T?>) {
-    TODO()
+    for (i in 0..first.size - 1) {
+        second[i] = first[i]
+    }
+    Arrays.sort(second)
 }
 
