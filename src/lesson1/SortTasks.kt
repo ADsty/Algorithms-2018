@@ -197,12 +197,13 @@ fun sortSequence(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     for (line in list) {
         if (line != (result.indexOf(max))) {
-            writer.write('0'.toInt() + line)
+            writer.write("$line")
             writer.newLine()
         }
     }
+    val res = result.indexOf(max)
     for (i in 1..max) {
-        writer.write('0'.toInt() + result.indexOf(max))
+        writer.write("$res")
         writer.newLine()
     }
     writer.close()
