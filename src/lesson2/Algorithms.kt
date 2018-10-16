@@ -183,5 +183,51 @@ fun isPrime(n: Int): Boolean {
  * Остальные символы ни в файле, ни в словах не допускаются.
  */
 fun baldaSearcher(inputName: String, words: Set<String>): Set<String> {
-    TODO()
+    val map = HashMap<Int, String>()
+    var cout = 1
+    var line_length = 0
+    val output = LinkedHashSet<String>()
+    for (line in File(inputName).readLines()) {
+        val parts = line.split(" ")
+        for (part in parts) {
+            map.put(cout, part)
+            cout++
+        }
+        line_length = parts.size
+    }
+    val directions = intArrayOf(1, -1, line_length, -line_length)
+    for (word in words) {
+        for (i in map.keys) {
+            var res = ""
+            var cur = i
+            cout = 1
+            if (word[0] == map.get(i)!![0]) {
+                res += word[0]
+                while (cout < word.length && search(word[cout], map, cur, directions, line_length) != Pair(-1, ' ')) {
+                    res += word[cout]
+                    cur += search(word[cout], map, cur, directions, line_length).first
+                    cout++
+                }
+            }
+            if (res == word) {
+                output.add(word)
+                continue
+            }
+        }
+    }
+    return output
+}
+
+fun search(letter: Char, map: HashMap<Int, String>, cur: Int, directions: IntArray, line_length: Int): Pair<Int, Char> {
+    for (k in directions) {
+        if (map.containsKey(k + cur)) {
+            if (k == 1 && cur % line_length == 0) {
+                continue
+            }
+            if (letter == map.get(cur + k)!![0]) {
+                return Pair(k, letter)
+            }
+        }
+    }
+    return Pair(-1, ' ')
 }
