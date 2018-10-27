@@ -199,14 +199,18 @@ fun baldaSearcher(inputName: String, words: Set<String>): Set<String> {
     val directions = intArrayOf(1, -1, lineLength, -lineLength)
     for (word in words) {
         for (i in map.keys) {
+            val alreadyUsed = mutableListOf<Int>()
             var res = ""
             var cur = i
             cout = 1
             if (word[0] == map.get(i)!![0]) {
                 res += word[0]
-                while (cout < word.length && search(word[cout], map, cur, directions, lineLength) != Pair(-1, ' ')) {
+                alreadyUsed.add(cur)
+                while (cout < word.length && search(word[cout], map, cur, directions, lineLength, alreadyUsed)
+                        != Pair(-1, ' ')) {
                     res += word[cout]
-                    cur += search(word[cout], map, cur, directions, lineLength).first
+                    cur += search(word[cout], map, cur, directions, lineLength, alreadyUsed).first
+                    alreadyUsed.add(cur)
                     cout++
                 }
             }
@@ -219,8 +223,10 @@ fun baldaSearcher(inputName: String, words: Set<String>): Set<String> {
     return output
 }
 
-fun search(letter: Char, map: HashMap<Int, String>, cur: Int, directions: IntArray, lineLength: Int): Pair<Int, Char> {
-    for (k in directions) {
+fun search(letter: Char, map: HashMap<Int, String>, cur: Int, dirs: IntArray, lineLength: Int, dir: MutableList<Int>)
+        : Pair<Int, Char> {
+    for (k in dirs) {
+        if (dir.contains(k + cur)) continue
         if (map.containsKey(k + cur)) {
             if (k == 1 && cur % lineLength == 0 || k == -1 && cur % lineLength == 1) {
                 continue
