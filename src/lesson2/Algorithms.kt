@@ -33,6 +33,7 @@ fun optimizeBuyAndSell(inputName: String): Pair<Int, Int> {
     var result = Pair<Int, Int>(-1, -1)
     var dif = 0
     for (line in File(inputName).readLines()) {
+        if (line.toInt() < 0) throw IllegalArgumentException()
         list.add(line.toInt())
     }
     for (i in 0..list.size - 1) {
@@ -109,7 +110,7 @@ fun josephTask(menNumber: Int, choiceInterval: Int): Int {
  */
 fun longestCommonSubstring(first: String, second: String): String {
     var length = 0
-    var max_length = 0
+    var maxLength = 0
     var result = ""
     for (i in 0..first.length - 1) {
         for (j in 0..second.length - 1) {
@@ -121,8 +122,8 @@ fun longestCommonSubstring(first: String, second: String): String {
                 c++
                 k++
             }
-            if (length > max_length) {
-                max_length = length
+            if (length > maxLength) {
+                maxLength = length
                 result = first.substring(i, c)
             }
         }
@@ -185,7 +186,7 @@ fun isPrime(n: Int): Boolean {
 fun baldaSearcher(inputName: String, words: Set<String>): Set<String> {
     val map = HashMap<Int, String>()
     var cout = 1
-    var line_length = 0
+    var lineLength = 0
     val output = LinkedHashSet<String>()
     for (line in File(inputName).readLines()) {
         val parts = line.split(" ")
@@ -193,9 +194,9 @@ fun baldaSearcher(inputName: String, words: Set<String>): Set<String> {
             map.put(cout, part)
             cout++
         }
-        line_length = parts.size
+        lineLength = parts.size
     }
-    val directions = intArrayOf(1, -1, line_length, -line_length)
+    val directions = intArrayOf(1, -1, lineLength, -lineLength)
     for (word in words) {
         for (i in map.keys) {
             var res = ""
@@ -203,9 +204,9 @@ fun baldaSearcher(inputName: String, words: Set<String>): Set<String> {
             cout = 1
             if (word[0] == map.get(i)!![0]) {
                 res += word[0]
-                while (cout < word.length && search(word[cout], map, cur, directions, line_length) != Pair(-1, ' ')) {
+                while (cout < word.length && search(word[cout], map, cur, directions, lineLength) != Pair(-1, ' ')) {
                     res += word[cout]
-                    cur += search(word[cout], map, cur, directions, line_length).first
+                    cur += search(word[cout], map, cur, directions, lineLength).first
                     cout++
                 }
             }
@@ -218,10 +219,10 @@ fun baldaSearcher(inputName: String, words: Set<String>): Set<String> {
     return output
 }
 
-fun search(letter: Char, map: HashMap<Int, String>, cur: Int, directions: IntArray, line_length: Int): Pair<Int, Char> {
+fun search(letter: Char, map: HashMap<Int, String>, cur: Int, directions: IntArray, lineLength: Int): Pair<Int, Char> {
     for (k in directions) {
         if (map.containsKey(k + cur)) {
-            if (k == 1 && cur % line_length == 0) {
+            if (k == 1 && cur % lineLength == 0 || k == -1 && cur % lineLength == 1) {
                 continue
             }
             if (letter == map.get(cur + k)!![0]) {

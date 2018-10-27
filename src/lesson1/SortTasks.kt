@@ -5,6 +5,8 @@ package lesson1
 import java.io.File
 import java.io.IOException
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 /**
  * Сортировка времён
@@ -137,16 +139,7 @@ fun sortTemperatures(inputName: String, outputName: String) {
         list.add(line.toDouble())
     }
     val sorting = list.toDoubleArray()
-
-    for (j in 1 until sorting.size) {
-        var i = j
-        while (i > 0 && sorting[i - 1] > sorting[i]) {
-            val o = sorting[i]
-            sorting[i] = sorting[i - 1]
-            sorting[i - 1] = o
-            i--
-        }
-    }
+    sorting.sort()
     val writer = File(outputName).bufferedWriter()
     for (k in sorting) {
         writer.write(k.toString())
@@ -189,21 +182,32 @@ fun sortSequence(inputName: String, outputName: String) {
     for (line in File(inputName).readLines()) {
         list.add(line.toInt())
     }
-    val result = IntArray(list.max()!! + 1)
+    if (list.isEmpty()) return
+    val result = HashMap<Int, Int>()
     for (i in list) {
-        result[i]++
+        if (result.containsKey(i)) {
+            result.put(i, result.get(i)!! + 1)
+        } else {
+            result.put(i, 1)
+        }
     }
-    val max = result.max()!!
+    var max = 0
+    var cout = 0
+    for (i in result.keys) {
+        if (result.getValue(i) > max || i < cout && result.getValue(i) == max) {
+            max = result.getValue(i)
+            cout = i
+        }
+    }
     val writer = File(outputName).bufferedWriter()
     for (line in list) {
-        if (line != (result.indexOf(max))) {
+        if (line != cout) {
             writer.write("$line")
             writer.newLine()
         }
     }
-    val res = result.indexOf(max)
     for (i in 1..max) {
-        writer.write("$res")
+        writer.write("$cout")
         writer.newLine()
     }
     writer.close()
