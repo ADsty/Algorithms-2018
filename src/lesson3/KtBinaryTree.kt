@@ -55,7 +55,21 @@ class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSorted
      * Средняя
      */
     override fun remove(element: T): Boolean {
-        TODO()
+        if(contains(element)) {
+            var closest = find(element)
+            if(closest?.right == null){
+                closest = closest!!.left
+            }
+            else{
+                var leftMost = closest.right
+                while(leftMost?.left != null){
+                    leftMost = leftMost.left
+                }
+                closest = leftMost
+            }
+            return true
+        }
+        return false
     }
 
     override operator fun contains(element: T): Boolean {

@@ -1,9 +1,11 @@
 package lesson1
 
+import org.junit.jupiter.api.Assertions
 import java.io.BufferedWriter
 import java.io.File
 import java.util.*
 import kotlin.math.abs
+
 
 abstract class AbstractTaskTests : AbstractFileTests() {
 
@@ -36,6 +38,11 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         try {
             sortTimes("input/time_in3.txt", "temp.txt")
             assertFileContent("temp.txt", File("input/time_out3.txt").readLines().joinToString(separator = "\n"))
+        } finally {
+            File("temp.txt").delete()
+        }
+        try {
+            Assertions.assertThrows(IllegalArgumentException::class.java, { sortTimes("input/time_in4.txt", "temp.txt") })
         } finally {
             File("temp.txt").delete()
         }
@@ -98,6 +105,22 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         } finally {
             File("temp.txt").delete()
         }
+        try {
+            sortTemperatures("input/temp_in2.txt", "temp.txt")
+            assertFileContent("temp.txt",
+                    """
+                     -24.7
+                     -24.7
+                     -24.7
+                     -24.7
+                     -24.7
+                     24.7
+                     24.7
+                """.trimIndent()
+            )
+        } finally {
+            File("temp.txt").delete()
+        }
 
         fun testGeneratedTemperatures(size: Int) {
             try {
@@ -146,6 +169,25 @@ abstract class AbstractTaskTests : AbstractFileTests() {
                         12
                         12
                         12
+                    """.trimIndent())
+        } finally {
+            File("temp.txt").delete()
+        }
+        try {
+            sortSequence("input/seq_in3.txt", "temp.txt")
+            assertFileContent("temp.txt",
+                    """
+                    """.trimIndent())
+        } finally {
+            File("temp.txt").delete()
+        }
+        try {
+            sortSequence("input/seq_in4.txt", "temp.txt")
+            assertFileContent("temp.txt",
+                    """
+                        2000000000
+                        1000000000
+                        1
                     """.trimIndent())
         } finally {
             File("temp.txt").delete()

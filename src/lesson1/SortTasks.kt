@@ -182,7 +182,6 @@ fun sortSequence(inputName: String, outputName: String) {
     for (line in File(inputName).readLines()) {
         list.add(line.toInt())
     }
-    if (list.isEmpty()) return
     val result = HashMap<Int, Int>()
     for (i in list) {
         if (result.containsKey(i)) {
