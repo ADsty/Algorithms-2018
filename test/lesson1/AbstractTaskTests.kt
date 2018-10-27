@@ -1,10 +1,10 @@
 package lesson1
 
-import org.junit.jupiter.api.Assertions
 import java.io.BufferedWriter
 import java.io.File
 import java.util.*
 import kotlin.math.abs
+import kotlin.test.fail
 
 
 abstract class AbstractTaskTests : AbstractFileTests() {
@@ -42,7 +42,10 @@ abstract class AbstractTaskTests : AbstractFileTests() {
             File("temp.txt").delete()
         }
         try {
-            Assertions.assertThrows(IllegalArgumentException::class.java, { sortTimes("input/time_in4.txt", "temp.txt") })
+            sortTimes("input/time_in4.txt", "temp.txt")
+            fail("Excepted IllegalArgumentException")
+        } catch (ex: IllegalArgumentException) {
+
         } finally {
             File("temp.txt").delete()
         }

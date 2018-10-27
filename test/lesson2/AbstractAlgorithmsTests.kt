@@ -1,10 +1,10 @@
 package lesson2
 
-import org.junit.jupiter.api.Assertions
 import java.io.BufferedWriter
 import java.io.File
 import java.util.*
 import kotlin.test.assertEquals
+import kotlin.test.fail
 
 abstract class AbstractAlgorithmsTests {
 
@@ -48,7 +48,10 @@ abstract class AbstractAlgorithmsTests {
         assertEquals(8 to 12, optimizeBuyAndSell("input/buysell_in2.txt"))
         assertEquals(3 to 4, optimizeBuyAndSell("input/buysell_in3.txt"))
         try {
-            Assertions.assertThrows(IllegalArgumentException::class.java, { optimizeBuyAndSell("input/buysell_in4.txt") })
+            optimizeBuyAndSell("input/buysell_in4.txt")
+            fail("Excepted IllegalArgumentException")
+        } catch (ex: IllegalArgumentException) {
+
         } finally {
             File("temp.txt").delete()
         }
@@ -685,7 +688,7 @@ abstract class AbstractAlgorithmsTests {
     fun baldaSearcher(baldaSearcher: (String, Set<String>) -> Set<String>) {
         assertEquals(setOf("ТРАВА", "КРАН", "АКВА", "НАРТЫ"),
                 baldaSearcher("input/balda_in1.txt", setOf("ТРАВА", "КРАН", "АКВА", "НАРТЫ", "РАК")))
-        assertEquals(setOf("ВОООН" , "ДРЫЫН", "ДРОН", "ВООД"),
-                baldaSearcher("input/balda_in2.txt", setOf("ВОООН" , "ДРЫЫН", "ДРОН", "ВООД" , "ДРОООН")))
+        assertEquals(setOf("ВОООН", "ДРЫЫН", "ДРОН", "ВООД"),
+                baldaSearcher("input/balda_in2.txt", setOf("ВОООН", "ДРЫЫН", "ДРОН", "ВООД", "ДРОООН")))
     }
 }
