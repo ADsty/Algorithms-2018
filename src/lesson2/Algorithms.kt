@@ -27,6 +27,7 @@ import java.io.File
  * Например, для приведённого выше файла результат должен быть Pair(3, 4)
  *
  * В случае обнаружения неверного формата файла бросить любое исключение.
+ * Сложность O(n) , Ресурсоемкость R(n)
  */
 fun optimizeBuyAndSell(inputName: String): Pair<Int, Int> {
     val list = ArrayList<Int>()
@@ -120,28 +121,35 @@ fun josephTask(menNumber: Int, choiceInterval: Int): Int {
  * При сравнении подстрок, регистр символов *имеет* значение.
  * Если имеется несколько самых длинных общих подстрок одной длины,
  * вернуть ту из них, которая встречается раньше в строке first.
+ * Сложность O(nm) , Ресурсоемкость R(nm)
  */
 fun longestCommonSubstring(first: String, second: String): String {
-    var length = 0
+    val matrix = Array(first.length) { IntArray(second.length) }
+    var index = -1
+    var length: Int
     var maxLength = 0
-    var result = ""
     for (i in 0..first.length - 1) {
         for (j in 0..second.length - 1) {
-            length = 0
-            var c = i
-            var k = j
-            while (c < first.length && k < second.length && first[c] == second[k]) {
-                length++
-                c++
-                k++
-            }
-            if (length > maxLength) {
-                maxLength = length
-                result = first.substring(i, c)
+            if (first[i] == second[j]) {
+                if (i > 0 && j > 0) {
+                    length = matrix[i - 1][j - 1] + 1
+                    if (length > maxLength) {
+                        maxLength = length
+                        index = i
+                    }
+                    matrix[i][j] = length
+                } else {
+                    matrix[i][j] = 1
+                    if (maxLength == 0) {
+                        maxLength = 1
+                        index = i
+                    }
+                }
             }
         }
     }
-    return result
+    if (maxLength == 0) return ""
+    return first.substring(index - maxLength + 1, index + 1)
 }
 
 /**
@@ -153,6 +161,7 @@ fun longestCommonSubstring(first: String, second: String): String {
  *
  * Справка: простым считается число, которое делится нацело только на 1 и на себя.
  * Единица простым числом не считается.
+ * Сложность O(n*sqrt(n)) , Ресурсоемкость R(1)
  */
 fun calcPrimesNumber(limit: Int): Int {
     var result = 0;
@@ -195,6 +204,8 @@ fun isPrime(n: Int): Boolean {
  * Все слова и буквы -- русские или английские, прописные.
  * В файле буквы разделены пробелами, строки -- переносами строк.
  * Остальные символы ни в файле, ни в словах не допускаются.
+ * Сложность O(nmh) , Ресурсоемкость R(n + h) , где n - количество букв , m - количество слов для поиска ,
+ * h - длинна слов для поиска
  */
 fun baldaSearcher(inputName: String, words: Set<String>): Set<String> {
     val map = HashMap<Int, String>()

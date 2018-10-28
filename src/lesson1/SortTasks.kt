@@ -35,6 +35,7 @@ import kotlin.collections.HashMap
  * 19:56:14
  *
  * В случае обнаружения неверного формата файла бросить любое исключение.
+ * Сложность в худшем случае O(n log n) , Ресурсоемкость R(n)
  */
 fun sortTimes(inputName: String, outputName: String) {
     if (File(inputName).readLines().isEmpty()) throw IOException()
@@ -132,6 +133,7 @@ fun sortAddresses(inputName: String, outputName: String) {
  * 24.7
  * 99.5
  * 121.3
+ * Сложность O(n log n) ,  Ресурсоемкость R(n)
  */
 fun sortTemperatures(inputName: String, outputName: String) {
     val list = ArrayList<Double>()
@@ -176,6 +178,7 @@ fun sortTemperatures(inputName: String, outputName: String) {
  * 2
  * 2
  * 2
+ * Сложность O(n) , Ресурсоемкость R(n)
  */
 fun sortSequence(inputName: String, outputName: String) {
     val list = ArrayList<Int>()
@@ -225,6 +228,7 @@ fun sortSequence(inputName: String, outputName: String) {
  * second = [null null null null null 1 3 9 13 18 23]
  *
  * Результат: second = [1 3 4 9 9 13 15 20 23 28]
+ * Сложность O(n log n) ,  Ресурсоемкость R(1)
  */
 fun <T : Comparable<T>> mergeArrays(first: Array<T>, second: Array<T?>) {
     for (i in 0..first.size - 1) {
