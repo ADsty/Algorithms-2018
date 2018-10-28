@@ -30,18 +30,31 @@ import java.io.File
  */
 fun optimizeBuyAndSell(inputName: String): Pair<Int, Int> {
     val list = ArrayList<Int>()
-    var result = Pair<Int, Int>(-1, -1)
-    var dif = 0
     for (line in File(inputName).readLines()) {
         if (line.toInt() < 0) throw IllegalArgumentException()
         list.add(line.toInt())
     }
-    for (i in 0..list.size - 1) {
-        for (j in i until list.size - 1) {
-            if (list[j] - list[i] > dif) {
-                dif = list[j] - list[i]
-                result = Pair(i + 1, j + 1)
-            }
+    val delta = IntArray(list.size - 1)
+    for (i in 0..list.size - 2) {
+        delta[i] = list[i + 1] - list[i]
+    }
+    return getMaxSubSum(delta)
+}
+
+fun getMaxSubSum(array: IntArray): Pair<Int, Int> {
+    var max = 0
+    var partial = 0
+    var first = 0
+    var result = Pair(-1, -1)
+    for (i in 0..array.size - 1) {
+        partial += array[i]
+        if (partial > max) {
+            max = partial
+            result = Pair(first + 2, i + 2)
+        }
+        if (partial < 0) {
+            partial = 0
+            first = i
         }
     }
     return result
