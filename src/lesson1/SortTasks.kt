@@ -35,7 +35,7 @@ import kotlin.collections.HashMap
  * 19:56:14
  *
  * В случае обнаружения неверного формата файла бросить любое исключение.
- * Сложность в худшем случае O(n log n) , Ресурсоемкость R(n)
+ * Сложность O(n log n) , Ресурсоемкость R(n)
  */
 fun sortTimes(inputName: String, outputName: String) {
     if (File(inputName).readLines().isEmpty()) throw IOException()

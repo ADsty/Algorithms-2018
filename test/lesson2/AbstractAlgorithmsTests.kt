@@ -690,5 +690,20 @@ abstract class AbstractAlgorithmsTests {
                 baldaSearcher("input/balda_in1.txt", setOf("ТРАВА", "КРАН", "АКВА", "НАРТЫ", "РАК")))
         assertEquals(setOf("ВОООН", "ДРЫЫН", "ДРОН", "ВООД"),
                 baldaSearcher("input/balda_in2.txt", setOf("ВОООН", "ДРЫЫН", "ДРОН", "ВООД", "ДРОООН")))
+        try {
+            baldaSearcher("input/balda_in1.txt", setOf("ТРАВА", "КРАН", "АКВА", "НАРТЫ", "РАК", "РАК32384729"))
+            fail("Excepted IllegalArgumentException")
+        } catch (ex: IllegalArgumentException) {
+
+        }
+        assertEquals(setOf("ВООООООООООООООООООООООООООООООООООООООООООООООООН"),
+                baldaSearcher("input/balda_in3.txt", setOf("ТРАВА", "КРАН", "АКВА", "НАРТЫ", "РАК",
+                        "ВООООООООООООООООООООООООООООООООООООООООООООООООН")))
+        try {
+            baldaSearcher("input/balda_in4.txt", setOf("ТРАВА", "КРАН", "АКВА", "НАРТЫ", "РАК", "РАК"))
+            fail("Excepted IllegalArgumentException")
+        } catch (ex: IllegalArgumentException) {
+
+        }
     }
 }

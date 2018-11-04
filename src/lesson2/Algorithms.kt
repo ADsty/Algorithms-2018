@@ -213,6 +213,9 @@ fun baldaSearcher(inputName: String, words: Set<String>): Set<String> {
     var lineLength = 0
     val output = LinkedHashSet<String>()
     for (line in File(inputName).readLines()) {
+        if (!line.matches(Regex("""[А-ЯЁA-Z ]+"""))) {
+            throw IllegalArgumentException()
+        }
         val parts = line.split(" ")
         for (part in parts) {
             map.put(cout, part)
@@ -222,6 +225,9 @@ fun baldaSearcher(inputName: String, words: Set<String>): Set<String> {
     }
     val directions = intArrayOf(1, -1, lineLength, -lineLength)
     for (word in words) {
+        if (!word.matches(Regex("""[А-ЯЁA-Z ]+"""))) {
+            throw IllegalArgumentException()
+        }
         for (i in map.keys) {
             val alreadyUsed = mutableListOf<Int>()
             var res = ""
