@@ -1,6 +1,6 @@
 package lesson3
 
-import java.util.SortedSet
+import java.util.*
 import kotlin.NoSuchElementException
 
 // Attention: comparable supported but comparator is not
@@ -55,7 +55,55 @@ class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSorted
      * Средняя
      */
     override fun remove(element: T): Boolean {
-        TODO()
+        if (remove(element, root, null)) {
+            size--
+            return true
+        }
+        return false
+    }
+
+    private fun remove(element: T, node: Node<T>?, father: Node<T>?): Boolean {
+        if (node == null) return false
+        val compare = element.compareTo(node.value)
+        when {
+            compare > 0 -> remove(element, node.right, node)
+            compare < 0 -> remove(element, node.left, node)
+            compare == 0 -> {
+                when {
+                    node.left == null && node.right == null -> father.replaceChild(node, null)
+                    node.right == null -> father.replaceChild(node, node.left)
+                    node.left == null -> father.replaceChild(node, node.right)
+                    else -> {
+                        val change = minimum(node.right!!, node)
+                        val rep = Node(change.first.value)
+                        if (node.left != null && rep.value != node.left!!.value) rep.left = node.left
+                        else rep.left = null
+                        if (node.right != null && rep.value != node.right!!.value) {
+                            rep.right = node.right
+                        } else if (node.right != null && node.right!!.right != null) {
+                            rep.right = node.right!!.right
+                        } else rep.right = null
+                        father.replaceChild(node, rep)
+                        if (change.first.right != null) change.second.replaceChild(change.first, change.first.right)
+                        else change.second.replaceChild(change.first, null)
+                    }
+                }
+            }
+        }
+        return true
+    }
+
+    private fun minimum(node: Node<T>, parent: Node<T>): Pair<Node<T>, Node<T>> {
+        if (node.left == null) return Pair(node, parent)
+        return minimum(node.left!!, node)
+    }
+
+    private fun Node<T>?.replaceChild(node: Node<T>, newNode: Node<T>?) {
+        when {
+            this == null -> root = newNode
+            this.left != null && this.left!!.value.compareTo(node.value) == 0 -> this.left = newNode
+            else -> this.right = newNode
+        }
     }
 
     override operator fun contains(element: T): Boolean {
@@ -78,16 +126,33 @@ class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSorted
     inner class BinaryTreeIterator : MutableIterator<T> {
 
         private var current: Node<T>? = null
+        private val queue = ArrayDeque<Node<T>>()
+
+        init {
+            pushLeft(root)
+        }
 
         /**
          * Поиск следующего элемента
          * Средняя
          */
         private fun findNext(): Node<T>? {
-            TODO()
+            val result = queue.pop()
+            pushLeft(result.right)
+            return result
         }
 
-        override fun hasNext(): Boolean = findNext() != null
+        private fun pushLeft(node: Node<T>?): Boolean {
+            if (node?.value == null) return false
+            var current = node
+            while (current != null) {
+                queue.push(current)
+                current = current.left
+            }
+            return true
+        }
+
+        override fun hasNext(): Boolean = queue.peekFirst() != null
 
         override fun next(): T {
             current = findNext()
@@ -99,7 +164,8 @@ class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSorted
          * Сложная
          */
         override fun remove() {
-            TODO()
+            if (current != null) remove(current!!.value)
+            else return
         }
     }
 
