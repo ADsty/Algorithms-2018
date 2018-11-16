@@ -1,6 +1,5 @@
 package lesson3
 
-import java.util.*
 
 class Trie : AbstractMutableSet<String>(), MutableSet<String> {
     override var size: Int = 0
@@ -63,38 +62,7 @@ class Trie : AbstractMutableSet<String>(), MutableSet<String> {
      * Итератор для префиксного дерева
      * Сложная
      */
-    override fun iterator(): MutableIterator<String> = TrieIterator()
-
-    inner class TrieIterator : MutableIterator<String> {
-        private var current: Char = ' '
-        private val queue = ArrayDeque<Char>()
-
-        init {
-            push(root)
-        }
-
-        private fun push(node : Node){
-            for(child in node.children){
-                queue.push(child.key)
-                push(child.value)
-            }
-        }
-        private fun findNext(): Char{
-            if(queue.isEmpty()) return ' '
-            return queue.pop()
-        }
-
-        override fun hasNext(): Boolean {
-            return queue.peekFirst() != null
-        }
-
-        override fun next(): String {
-            current = findNext()
-            return current.toString()
-        }
-
-        override fun remove() {
-            remove(current.toString())
-        }
+    override fun iterator(): MutableIterator<String> {
+        TODO()
     }
 }

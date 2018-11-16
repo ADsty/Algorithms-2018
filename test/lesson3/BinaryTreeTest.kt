@@ -1,11 +1,8 @@
 package lesson3
 
 import org.junit.jupiter.api.Tag
-import kotlin.test.Test
 import java.util.*
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 class BinaryTreeTest {
     private fun testAdd(create: () -> CheckableSortedSet<Int>) {
@@ -75,6 +72,14 @@ class BinaryTreeTest {
             }
             assertTrue(binarySet.checkInvariant())
         }
+        val tree = KtBinaryTree<Int>()
+        for (i in 1..10000) {
+            tree.add(i)
+        }
+        for (i in 5..10000) {
+            tree.remove(i)
+        }
+        assertEquals(4, tree.size)
     }
 
     @Test
@@ -108,6 +113,23 @@ class BinaryTreeTest {
             while (treeIt.hasNext()) {
                 assertEquals(treeIt.next(), binaryIt.next())
             }
+        }
+        val tree = KtBinaryTree<Int>()
+        val treeTest = TreeSet<Int>()
+        for (i in 1..10000) {
+            tree.add(i)
+            treeTest.add(i)
+        }
+        val treeIt = treeTest.iterator()
+        val binaryIt = tree.iterator()
+        while (treeIt.hasNext()) {
+            assertEquals(treeIt.next(), binaryIt.next())
+        }
+        try {
+            treeIt.next()
+            fail("Excepted NoSuchElementException")
+        } catch (ex: NoSuchElementException) {
+
         }
     }
 
@@ -157,6 +179,12 @@ class BinaryTreeTest {
             }
             assertTrue(binarySet.checkInvariant())
         }
+        val tree = KtBinaryTree<Int>()
+        tree.add(1)
+        val binaryIt = tree.iterator()
+        binaryIt.next()
+        binaryIt.remove()
+        assertEquals(0, tree.size)
     }
 
     @Test

@@ -43,7 +43,12 @@ class KotlinHeadSetTest : AbstractHeadTailTest() {
 
     @Test
     @Tag("Impossible")
-    fun subSetRelationTest(){
+    fun subSetRelationTest() {
         doSubSetRelationTest()
+    }
+
+    @Test
+    fun bigTest() {
+        doBigTest()
     }
 }

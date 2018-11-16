@@ -30,6 +30,7 @@ class KtBinaryTree<T : Comparable<T>>() : AbstractMutableSet<T>(), CheckableSort
         }
 
     private class Node<T>(val value: T) {
+        var parent: Node<T>? = null
 
         var left: Node<T>? = null
 
@@ -43,6 +44,7 @@ class KtBinaryTree<T : Comparable<T>>() : AbstractMutableSet<T>(), CheckableSort
             return false
         }
         val newNode = Node(element)
+        newNode.parent = closest
         when {
             closest == null -> root = newNode
             comparison < 0 -> {
@@ -70,6 +72,7 @@ class KtBinaryTree<T : Comparable<T>>() : AbstractMutableSet<T>(), CheckableSort
     /**
      * Удаление элемента в дереве
      * Средняя
+     * Сложность O(h), Ресурсоемкость R(1) , где h - глубина дерева
      */
     override fun remove(element: T): Boolean {
         return remove(element, root, null)
@@ -82,19 +85,21 @@ class KtBinaryTree<T : Comparable<T>>() : AbstractMutableSet<T>(), CheckableSort
             compare > 0 -> remove(element, node.right, node)
             compare < 0 -> remove(element, node.left, node)
             compare == 0 -> {
+                val nodeLeft = node.left
+                val nodeRight = node.right
                 when {
-                    node.left == null && node.right == null -> replaceChild(father, node, null)
-                    node.right == null -> replaceChild(father, node, node.left)
-                    node.left == null -> replaceChild(father, node, node.right)
+                    nodeLeft == null && nodeRight == null -> replaceChild(father, node, null)
+                    nodeRight == null -> replaceChild(father, node, nodeLeft)
+                    nodeLeft == null -> replaceChild(father, node, nodeRight)
                     else -> {
-                        val change = minimum(node.right!!, node)
+                        val change = minimum(nodeRight, node)
                         val rep = Node(change.first.value)
-                        if (node.left != null && rep.value != node.left!!.value) rep.left = node.left
+                        if (rep.value != nodeLeft.value) rep.left = nodeLeft
                         else rep.left = null
-                        if (node.right != null && rep.value != node.right!!.value) {
-                            rep.right = node.right
-                        } else if (node.right != null && node.right!!.right != null) {
-                            rep.right = node.right!!.right
+                        if (rep.value != nodeRight.value) {
+                            rep.right = nodeRight
+                        } else if (nodeRight.right != null) {
+                            rep.right = nodeRight.right
                         } else rep.right = null
                         replaceChild(father, node, rep)
                         if (change.first.right != null) replaceChild(change.second, change.first, change.first.right)
@@ -107,8 +112,8 @@ class KtBinaryTree<T : Comparable<T>>() : AbstractMutableSet<T>(), CheckableSort
     }
 
     private fun minimum(node: Node<T>, parent: Node<T>): Pair<Node<T>, Node<T>> {
-        if (node.left == null) return Pair(node, parent)
-        return minimum(node.left!!, node)
+        return if (node.left == null) Pair(node, parent)
+        else return minimum(node.left!!, node)
     }
 
     private fun replaceChild(parent: Node<T>?, node: Node<T>, newNode: Node<T>?) {
@@ -154,6 +159,8 @@ class KtBinaryTree<T : Comparable<T>>() : AbstractMutableSet<T>(), CheckableSort
         /**
          * Поиск следующего элемента
          * Средняя
+         * Сложность O(h) , Ресурсоемкость R(n) , где h - глубина дерева , n - количество элементов в дереве,
+         * которые будут записаны в очередь queue
          */
         private fun findNext(): Node<T>? {
             val result = queue.pop()
@@ -181,10 +188,34 @@ class KtBinaryTree<T : Comparable<T>>() : AbstractMutableSet<T>(), CheckableSort
         /**
          * Удаление следующего элемента
          * Сложная
+         * Сложность O(1) , Ресурсоемкость R(1)
          */
         override fun remove() {
-            if (current != null) remove(current!!.value)
-            else return
+            if (current == null) return
+            else {
+                val cur = current!!
+                val nodeLeft = cur.left
+                val nodeRight = cur.right
+                when {
+                    nodeLeft == null && nodeRight == null -> replaceChild(cur.parent, cur, null)
+                    nodeRight == null -> replaceChild(cur.parent, cur, nodeLeft)
+                    nodeLeft == null -> replaceChild(cur.parent, cur, nodeRight)
+                    else -> {
+                        val change = minimum(nodeRight, cur)
+                        val rep = Node(change.first.value)
+                        if (rep.value != nodeLeft.value) rep.left = nodeLeft
+                        else rep.left = null
+                        if (rep.value != nodeRight.value) {
+                            rep.right = nodeRight
+                        } else if (nodeRight.right != null) {
+                            rep.right = nodeRight.right
+                        } else rep.right = null
+                        replaceChild(cur.parent, cur, rep)
+                        if (change.first.right != null) replaceChild(change.second, change.first, change.first.right)
+                        else replaceChild(change.second, change.first, null)
+                    }
+                }
+            }
         }
     }
 
@@ -195,6 +226,7 @@ class KtBinaryTree<T : Comparable<T>>() : AbstractMutableSet<T>(), CheckableSort
     /**
      * Для этой задачи нет тестов (есть только заготовка subSetTest), но её тоже можно решить и их написать
      * Очень сложная
+     * Сложность O(a) , Ресурсоемкость R(1) , где a - глубина на которой находится первый элемент
      */
     override fun subSet(fromElement: T, toElement: T): SortedSet<T> {
         if (root == null) return KtBinaryTree()
@@ -204,6 +236,7 @@ class KtBinaryTree<T : Comparable<T>>() : AbstractMutableSet<T>(), CheckableSort
     /**
      * Найти множество всех элементов меньше заданного
      * Сложная
+     * Сложность O(a) , Ресурсоемкость R(1) , где a - глубина на которой находится первый элемент
      */
     override fun headSet(toElement: T): SortedSet<T> {
         if (root == null) return KtBinaryTree()
@@ -213,6 +246,7 @@ class KtBinaryTree<T : Comparable<T>>() : AbstractMutableSet<T>(), CheckableSort
     /**
      * Найти множество всех элементов больше или равных заданного
      * Сложная
+     * Сложность O(a) , Ресурсоемкость R(1) , где a - глубина на которой находится первый элемент
      */
     override fun tailSet(fromElement: T): SortedSet<T> {
         if (root == null) return KtBinaryTree()
