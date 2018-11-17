@@ -16,13 +16,11 @@ class KtBinaryTree<T : Comparable<T>>() : AbstractMutableSet<T>(), CheckableSort
         private set
         get() {
             var result = 0
-            val iterator = BinaryTreeIterator()
-            while (iterator.hasNext()) {
-                val comp = iterator.next()
+            for (node in this) {
                 when {
-                    first != null && last != null && comp >= first!! && comp <= last!! -> result++
-                    first != null && last == null && comp >= first!! -> result++
-                    last != null && first == null && comp < last!! -> result++
+                    first != null && last != null && node >= first!! && node <= last!! -> result++
+                    first != null && last == null && node >= first!! -> result++
+                    last != null && first == null && node < last!! -> result++
                     first == null && last == null -> result++
                 }
             }
@@ -163,6 +161,7 @@ class KtBinaryTree<T : Comparable<T>>() : AbstractMutableSet<T>(), CheckableSort
          * которые будут записаны в очередь queue
          */
         private fun findNext(): Node<T>? {
+            if (queue.peekFirst() == null) return null
             val result = queue.pop()
             pushLeft(result.right)
             return result
@@ -182,6 +181,31 @@ class KtBinaryTree<T : Comparable<T>>() : AbstractMutableSet<T>(), CheckableSort
 
         override fun next(): T {
             current = findNext()
+            var clone = current
+            when {
+                first != null && last != null && (first!! > current!!.value || last!! < current!!.value) -> {
+                    while (current != null &&
+                            first != null && last != null && (first!! > current!!.value || last!! < current!!.value)) {
+                        current = findNext() ?: break
+                        clone = current
+                    }
+                    if (current?.value == null) return clone!!.value
+                }
+                first == null && last != null && last!! <= current!!.value -> {
+                    while (current != null && first == null && last != null && last!! <= current!!.value) {
+                        current = findNext() ?: break
+                        clone = current
+                    }
+                    if (current?.value == null) return clone!!.value
+                }
+                last == null && first != null && first!! > current!!.value -> {
+                    while (current != null && last == null && first != null && first!! > current!!.value) {
+                        current = findNext() ?: break
+                        clone = current
+                    }
+                    if (current?.value == null) return clone!!.value
+                }
+            }
             return (current ?: throw NoSuchElementException()).value
         }
 
