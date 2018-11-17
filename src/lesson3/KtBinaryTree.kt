@@ -211,30 +211,7 @@ class KtBinaryTree<T : Comparable<T>>() : AbstractMutableSet<T>(), CheckableSort
          */
         override fun remove() {
             if (current == null) return
-            else {
-                val cur = current!!
-                val nodeLeft = cur.left
-                val nodeRight = cur.right
-                when {
-                    nodeLeft == null && nodeRight == null -> replaceChild(cur.parent, cur, null)
-                    nodeRight == null -> replaceChild(cur.parent, cur, nodeLeft)
-                    nodeLeft == null -> replaceChild(cur.parent, cur, nodeRight)
-                    else -> {
-                        val change = minimum(nodeRight, cur)
-                        val rep = Node(change.first.value)
-                        if (rep.value != nodeLeft.value) rep.left = nodeLeft
-                        else rep.left = null
-                        if (rep.value != nodeRight.value) {
-                            rep.right = nodeRight
-                        } else if (nodeRight.right != null) {
-                            rep.right = nodeRight.right
-                        } else rep.right = null
-                        replaceChild(cur.parent, cur, rep)
-                        if (change.first.right != null) replaceChild(change.second, change.first, change.first.right)
-                        else replaceChild(change.second, change.first, null)
-                    }
-                }
-            }
+            else remove(current!!.value, current, current!!.parent)
         }
     }
 
@@ -313,8 +290,8 @@ class KtBinaryTree<T : Comparable<T>>() : AbstractMutableSet<T>(), CheckableSort
         }
     }
 
-    private constructor(root: Node<T>, first: T?, last: T?) : this() {
-        this.root = root
+    private constructor(node: Node<T>, first: T?, last: T?) : this() {
+        root = node
         this.first = first
         this.last = last
     }
