@@ -93,11 +93,11 @@ class KtBinaryTree<T : Comparable<T>>() : AbstractMutableSet<T>(), CheckableSort
                         val rep = Node(change.first.value)
                         if (rep.value != nodeLeft.value) rep.left = nodeLeft
                         else rep.left = null
-                        if (rep.value != nodeRight.value) {
-                            rep.right = nodeRight
-                        } else if (nodeRight.right != null) {
-                            rep.right = nodeRight.right
-                        } else rep.right = null
+                        when {
+                            rep.value != nodeRight.value -> rep.right = nodeRight
+                            nodeRight.right != null -> rep.right = nodeRight.right
+                            else -> rep.right = null
+                        }
                         replaceChild(father, node, rep)
                         if (change.first.right != null) replaceChild(change.second, change.first, change.first.right)
                         else replaceChild(change.second, change.first, null)
@@ -226,7 +226,7 @@ class KtBinaryTree<T : Comparable<T>>() : AbstractMutableSet<T>(), CheckableSort
      */
     override fun subSet(fromElement: T, toElement: T): SortedSet<T> {
         if (root == null) return KtBinaryTree()
-        return KtBinaryTree(subOf(fromElement, toElement, root), fromElement, toElement)
+        return KtBinaryTree(rootOf(fromElement, toElement, root), fromElement, toElement)
     }
 
     /**
@@ -236,7 +236,7 @@ class KtBinaryTree<T : Comparable<T>>() : AbstractMutableSet<T>(), CheckableSort
      */
     override fun headSet(toElement: T): SortedSet<T> {
         if (root == null) return KtBinaryTree()
-        return KtBinaryTree(firstOf(toElement, root), null, toElement)
+        return KtBinaryTree(firstOfLeft(toElement, root), null, toElement)
     }
 
     /**
@@ -246,7 +246,7 @@ class KtBinaryTree<T : Comparable<T>>() : AbstractMutableSet<T>(), CheckableSort
      */
     override fun tailSet(fromElement: T): SortedSet<T> {
         if (root == null) return KtBinaryTree()
-        return KtBinaryTree(lastOf(fromElement, root), fromElement, null)
+        return KtBinaryTree(firstOfRight(fromElement, root), fromElement, null)
     }
 
     override fun first(): T {
@@ -257,7 +257,7 @@ class KtBinaryTree<T : Comparable<T>>() : AbstractMutableSet<T>(), CheckableSort
         return current.value
     }
 
-    private fun firstOf(value: T, node: Node<T>?): Node<T> {
+    private fun firstOfLeft(value: T, node: Node<T>?): Node<T> {
         var current: Node<T> = node ?: throw NoSuchElementException()
         while (value < current.value) {
             current = current.left ?: break
@@ -273,7 +273,7 @@ class KtBinaryTree<T : Comparable<T>>() : AbstractMutableSet<T>(), CheckableSort
         return current.value
     }
 
-    private fun lastOf(value: T, node: Node<T>?): Node<T> {
+    private fun firstOfRight(value: T, node: Node<T>?): Node<T> {
         var current: Node<T> = node ?: throw NoSuchElementException()
         while (value > current.value) {
             current = current.right ?: break
@@ -281,11 +281,11 @@ class KtBinaryTree<T : Comparable<T>>() : AbstractMutableSet<T>(), CheckableSort
         return current
     }
 
-    private fun subOf(fromElement: T, toElement: T, node: Node<T>?): Node<T> {
+    private fun rootOf(fromElement: T, toElement: T, node: Node<T>?): Node<T> {
         if (node == null) throw NoSuchElementException()
         return when {
-            fromElement > node.value -> lastOf(fromElement, node)
-            toElement < node.value -> firstOf(toElement, node)
+            fromElement > node.value -> firstOfRight(fromElement, node)
+            toElement < node.value -> firstOfLeft(toElement, node)
             else -> return node
         }
     }

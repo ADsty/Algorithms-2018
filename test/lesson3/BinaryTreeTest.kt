@@ -122,11 +122,11 @@ class BinaryTreeTest {
         }
         val treeIt = treeTest.iterator()
         val binaryIt = tree.iterator()
-        while (treeIt.hasNext()) {
+        while (binaryIt.hasNext()) {
             assertEquals(treeIt.next(), binaryIt.next())
         }
         try {
-            treeIt.next()
+            binaryIt.next()
             fail("Excepted NoSuchElementException")
         } catch (ex: NoSuchElementException) {
 
@@ -169,7 +169,6 @@ class BinaryTreeTest {
                     iterator.remove()
                 }
             }
-            println()
             assertEquals<SortedSet<*>>(treeSet, binarySet, "After removal of $toRemove from $list")
             assertEquals(treeSet.size, binarySet.size)
             for (element in list) {

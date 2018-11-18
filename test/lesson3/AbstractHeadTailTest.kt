@@ -21,12 +21,11 @@ abstract class AbstractHeadTailTest {
         tree.add(6)
     }
 
-    protected fun bigTree(empty: KtBinaryTree<Int>): KtBinaryTree<Int> {
-        val tree = empty
+    private fun bigTree(empty: KtBinaryTree<Int>): KtBinaryTree<Int> {
         for (i in 1..10000) {
-            tree.add(i)
+            empty.add(i)
         }
-        return tree
+        return empty
     }
 
     protected fun doHeadSetTest() {
@@ -46,7 +45,9 @@ abstract class AbstractHeadTailTest {
         set = tree.headSet(127)
         for (i in 1..10)
             assertEquals(true, set.contains(i))
-
+        set = tree.headSet(0)
+        for (i in 1..10)
+            assertEquals(false, set.contains(i))
     }
 
     protected fun doTailSetTest() {
@@ -65,7 +66,9 @@ abstract class AbstractHeadTailTest {
         set = tree.tailSet(-128)
         for (i in 1..10)
             assertEquals(true, set.contains(i))
-
+        set = tree.tailSet(11)
+        for (i in 1..10)
+            assertEquals(false, set.contains(i))
     }
 
     protected fun doHeadSetRelationTest() {
@@ -145,6 +148,9 @@ abstract class AbstractHeadTailTest {
         assertEquals(true, set.contains(8))
         assertEquals(false, set.contains(9))
         assertEquals(false, set.contains(10))
+        set = tree.subSet(-1, -1)
+        for (i in 1..10)
+            assertEquals(false, set.contains(i))
     }
 
     protected fun doSubSetRelationTest() {
