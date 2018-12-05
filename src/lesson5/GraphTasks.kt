@@ -2,6 +2,8 @@
 
 package lesson5
 
+import java.util.*
+
 /**
  * Эйлеров цикл.
  * Средняя
@@ -89,7 +91,29 @@ fun Graph.minimumSpanningTree(): Graph {
  * Эта задача может быть зачтена за пятый и шестой урок одновременно
  */
 fun Graph.largestIndependentVertexSet(): Set<Graph.Vertex> {
-    TODO()
+    if (this.vertices.size == 0) return emptySet()
+    val result = hashMapOf<Graph.Vertex, Set<Graph.Vertex>>()
+    return largestIndependentVertexSet(result, this.vertices.first(), null)
+}
+
+fun Graph.largestIndependentVertexSet(storage: MutableMap<Graph.Vertex, Set<Graph.Vertex>>,
+                                      vertex: Graph.Vertex,
+                                      parent: Graph.Vertex?): Set<Graph.Vertex> {
+    return storage.getOrPut(vertex) {
+        val children = this.getNeighbors(vertex).filter { it != parent }
+        val childrenSet = hashSetOf<Graph.Vertex>()
+        val grandChildrenSet = hashSetOf<Graph.Vertex>()
+        for (child in children) {
+            childrenSet.addAll(this.largestIndependentVertexSet(storage, child, vertex))
+            for (neighbor in this.getNeighbors(child)) {
+                if (neighbor != vertex) {
+                    grandChildrenSet.addAll(this.largestIndependentVertexSet(storage, neighbor, child))
+                }
+            }
+        }
+        if (childrenSet.size > grandChildrenSet.size + 1) childrenSet
+        else grandChildrenSet + vertex
+    }
 }
 
 /**
@@ -113,5 +137,22 @@ fun Graph.largestIndependentVertexSet(): Set<Graph.Vertex> {
  * Ответ: A, E, J, K, D, C, H, G, B, F, I
  */
 fun Graph.longestSimplePath(): Path {
-    TODO()
+    var best = Path(this.vertices.first())
+    val stack = ArrayDeque<Path>()
+    for (vertex in this.vertices) {
+        stack.add(Path(vertex))
+    }
+    while (stack.isNotEmpty()) {
+        val current = stack.pop()
+        if (current.length > best.length) {
+            best = current
+            if (current.vertices.size == this.vertices.size) break
+        }
+        for (neighbor in this.getNeighbors(current.vertices.last())) {
+            if (neighbor !in current) {
+                stack.push(Path(current, this, neighbor))
+            }
+        }
+    }
+    return best
 }
